@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SectorLayoutDemo</string>
+    
+    <string name="risk_0_2">极低致癌风险</string>
+    <string name="risk_2_4">较低致癌风险</string>
+    <string name="risk_4_6">较高致癌风险</string>
+    <string name="risk_6_8">高致癌风险</string>
+    <string name="risk_8_10">极高致癌风险</string>
+
+    <string name="advise_0_2">建议预约体检筛查</string>
+    <string name="advise_2_4">建议预约体检筛查</string>
+    <string name="advise_4_6">建议预约体检筛查</string>
+    <string name="advise_6_8">建议预约体检筛查</string>
+    <string name="advise_8_10">建议预约体检筛查</string>
 </resources>

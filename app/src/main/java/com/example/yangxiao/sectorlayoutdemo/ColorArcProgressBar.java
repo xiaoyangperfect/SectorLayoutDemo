@@ -23,8 +23,6 @@ import android.view.WindowManager;
  */
 public class ColorArcProgressBar extends View{
 
-    private int mWidth;
-    private int mHeight;
     //直径
     private int diameter = 500;
 
@@ -32,11 +30,11 @@ public class ColorArcProgressBar extends View{
     private float centerX;
     private float centerY;
 
-    private Paint allArcPaint;
-    private Paint progressPaint;
+    private Paint allCirclePaint;
+    private Paint progressCirclePaint;
     private Paint vTextPaint;
-    private Paint hintPaint;
-    private Paint degreePaint;
+    private Paint advicePaint;
+//    private Paint degreePaint;
     private Paint curSpeedPaint;
     private Paint centerCirclePaint;
 
@@ -49,13 +47,14 @@ public class ColorArcProgressBar extends View{
     private float sweepAngle = 270;
     private float currentAngle = 0;
     private float lastAngle;
-    private int[] colors = new int[]{Color.GREEN, Color.YELLOW, Color.RED, Color.RED};
+    private int[] colors = new int[]{Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED};
     private float maxValues = 60;
     private float curValues = 0;
+    private String curText;
     private float bgArcWidth = dipToPx(2);
     private float progressWidth = dipToPx(10);
-    private float textSize = dipToPx(60);
-    private float hintSize = dipToPx(15);
+    private float textSize = dipToPx(25);
+    private float hintSize = dipToPx(20);
     private float curSpeedSize = dipToPx(13);
     private int aniSpeed = 1000;
     private float longDegree = dipToPx(13);
@@ -149,18 +148,18 @@ public class ColorArcProgressBar extends View{
         centerX = (2 * longDegree + progressWidth + diameter + 2 * DEGREE_PROGRESS_DISTANCE)/2;
         centerY = (2 * longDegree + progressWidth + diameter + 2 * DEGREE_PROGRESS_DISTANCE)/2;
 
-        //外部刻度线
-        degreePaint = new Paint();
-        degreePaint.setColor(Color.parseColor(longDegreeColor));
+//        //外部刻度线
+//        degreePaint = new Paint();
+//        degreePaint.setColor(Color.parseColor(longDegreeColor));
 
         //整个弧形
-        allArcPaint = new Paint();
-        allArcPaint.setAntiAlias(true);
-        allArcPaint.setStyle(Paint.Style.STROKE);
-        allArcPaint.setStrokeWidth(bgArcWidth);
+        allCirclePaint = new Paint();
+        allCirclePaint.setAntiAlias(true);
+        allCirclePaint.setStyle(Paint.Style.STROKE);
+        allCirclePaint.setStrokeWidth(bgArcWidth);
         //Color.parseColor(bgArcColor)
-        allArcPaint.setColor(context.getResources().getColor(R.color.base_line));
-        allArcPaint.setStrokeCap(Paint.Cap.ROUND);
+        allCirclePaint.setColor(context.getResources().getColor(R.color.base_line));
+        allCirclePaint.setStrokeCap(Paint.Cap.ROUND);
 
         RadialGradient gradient = new RadialGradient(centerX, centerY, (float) diameter / 2 - bgArcWidth / 2,
                 new int[]{Color.WHITE, Color.GRAY},
@@ -175,12 +174,12 @@ public class ColorArcProgressBar extends View{
 //        centerCirclePaint.setShadowLayer(10, 0,0, context.getResources().getColor(R.color.base_line));
 
         //当前进度的弧形
-        progressPaint = new Paint();
-        progressPaint.setAntiAlias(true);
-        progressPaint.setStyle(Paint.Style.STROKE);
-        progressPaint.setStrokeCap(Paint.Cap.ROUND);
-        progressPaint.setStrokeWidth(progressWidth);
-        progressPaint.setColor(Color.GREEN);
+        progressCirclePaint = new Paint();
+        progressCirclePaint.setAntiAlias(true);
+        progressCirclePaint.setStyle(Paint.Style.STROKE);
+        progressCirclePaint.setStrokeCap(Paint.Cap.ROUND);
+        progressCirclePaint.setStrokeWidth(progressWidth);
+        progressCirclePaint.setColor(Color.GREEN);
 
         //内容显示文字
         vTextPaint = new Paint();
@@ -189,10 +188,10 @@ public class ColorArcProgressBar extends View{
         vTextPaint.setTextAlign(Paint.Align.CENTER);
 
         //显示单位文字
-        hintPaint = new Paint();
-        hintPaint.setTextSize(hintSize);
-        hintPaint.setColor(Color.parseColor(hintColor));
-        hintPaint.setTextAlign(Paint.Align.CENTER);
+        advicePaint = new Paint();
+        advicePaint.setTextSize(hintSize);
+        advicePaint.setColor(Color.parseColor(hintColor));
+        advicePaint.setTextAlign(Paint.Align.CENTER);
 
         //显示标题文字
         curSpeedPaint = new Paint();
@@ -210,29 +209,29 @@ public class ColorArcProgressBar extends View{
         //抗锯齿
         canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
 
-        if (isNeedDial) {
-            //画刻度线
-            for (int i = 0; i < 40; i++) {
-                if (i > 15 && i < 25) {
-                    canvas.rotate(9, centerX, centerY);
-                    continue;
-                }
-                if (i % 5 == 0) {
-                    degreePaint.setStrokeWidth(dipToPx(2));
-                    degreePaint.setColor(Color.parseColor(longDegreeColor));
-                    canvas.drawLine(centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE, centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - longDegree, degreePaint);
-                } else {
-                    degreePaint.setStrokeWidth(dipToPx(1.4f));
-                    degreePaint.setColor(Color.parseColor(shortDegreeColor));
-                    canvas.drawLine(centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - (longDegree - shortDegree) / 2, centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - (longDegree - shortDegree) / 2 - shortDegree, degreePaint);
-                }
-
-                canvas.rotate(9, centerX, centerY);
-            }
-        }
+//        if (isNeedDial) {
+//            //画刻度线
+//            for (int i = 0; i < 40; i++) {
+//                if (i > 15 && i < 25) {
+//                    canvas.rotate(9, centerX, centerY);
+//                    continue;
+//                }
+//                if (i % 5 == 0) {
+//                    degreePaint.setStrokeWidth(dipToPx(2));
+//                    degreePaint.setColor(Color.parseColor(longDegreeColor));
+//                    canvas.drawLine(centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE, centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - longDegree, degreePaint);
+//                } else {
+//                    degreePaint.setStrokeWidth(dipToPx(1.4f));
+//                    degreePaint.setColor(Color.parseColor(shortDegreeColor));
+//                    canvas.drawLine(centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - (longDegree - shortDegree) / 2, centerX, centerY - diameter / 2 - progressWidth / 2 - DEGREE_PROGRESS_DISTANCE - (longDegree - shortDegree) / 2 - shortDegree, degreePaint);
+//                }
+//
+//                canvas.rotate(9, centerX, centerY);
+//            }
+//        }
 
         //整个弧
-        canvas.drawArc(bgRect, startAngle, sweepAngle, false, allArcPaint);
+        canvas.drawArc(bgRect, startAngle, sweepAngle, false, allCirclePaint);
 //        canvas.drawArc(centerRect, startAngle, 360, false, centerCirclePaint);
 
         canvas.drawCircle(centerX, centerY, diameter / 2 - bgArcWidth / 2, centerCirclePaint);
@@ -242,16 +241,17 @@ public class ColorArcProgressBar extends View{
         Matrix matrix = new Matrix();
         matrix.setRotate(130, centerX, centerY);
         sweepGradient.setLocalMatrix(matrix);
-        progressPaint.setShader(sweepGradient);
+        progressCirclePaint.setShader(sweepGradient);
 
         //当前进度
-        canvas.drawArc(bgRect, startAngle, currentAngle, false, progressPaint);
+        canvas.drawArc(bgRect, startAngle, currentAngle, false, progressCirclePaint);
 
         if (isNeedContent) {
-            canvas.drawText(String.format("%.0f", curValues), centerX, centerY + textSize / 3, vTextPaint);
+            //String.format("%.0f", curValues)
+            canvas.drawText(curText, centerX, centerY, vTextPaint);
         }
         if (isNeedUnit) {
-            canvas.drawText(hintString, centerX, centerY + 2 * textSize / 3, hintPaint);
+            canvas.drawText(hintString, centerX, centerY + textSize, advicePaint);
         }
         if (isNeedTitle) {
             canvas.drawText(titleString, centerX, centerY - 2 * textSize / 3, curSpeedPaint);
@@ -284,6 +284,23 @@ public class ColorArcProgressBar extends View{
         this.curValues = currentValues;
         lastAngle = currentAngle;
         setAnimation(lastAngle, currentValues * k, aniSpeed);
+        this.curText = "0";
+        if (currentValues <= 20) {
+            curText = getResources().getString(R.string.risk_0_2);
+            hintString = getResources().getString(R.string.advise_0_2);
+        } else if (20 < currentValues && currentValues <= 40) {
+            curText = getResources().getString(R.string.risk_2_4);
+            hintString = getResources().getString(R.string.advise_2_4);
+        } else if (40 < currentValues && currentValues <= 60) {
+            curText = getResources().getString(R.string.risk_4_6);
+            hintString = getResources().getString(R.string.advise_4_6);
+        } else if (60 < currentValues && currentValues <= 80) {
+            curText = getResources().getString(R.string.risk_6_8);
+            hintString = getResources().getString(R.string.advise_6_8);
+        } else if (80 < currentValues && currentValues <= 100) {
+            curText = getResources().getString(R.string.risk_8_10);
+            hintString = getResources().getString(R.string.advise_8_10);
+        }
     }
 
     /**

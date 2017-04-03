@@ -20,8 +20,8 @@
         app:total_engle="270"
         app:is_need_unit="true"
         app:string_unit="km/h"
-        app:is_need_title="true"
-        app:string_title="当前速度"
+        app:is_need_title="false"
+        app:string_title=""
         app:back_color="@android:color/darker_gray"/>
 
     <ScrollView
